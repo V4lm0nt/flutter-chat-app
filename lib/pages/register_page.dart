@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:chat/widgets/widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../helpers/mostrar_alerta.dart';
+import '../services/auth_service.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -61,6 +65,9 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+
+  final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -91,10 +98,26 @@ class __FormState extends State<_Form> {
           ),
 
           // TAREA crear botón
-          BotonAzul(texto: 'Ingrese', onPressed: () {
-            print(nameCtrl.text);
-            print(emailCtrl.text);
-            print(passCtrl.text);
+          BotonAzul(
+          color: authService.autenticando ? Colors.grey : Colors.blue,
+          texto: 'Registrarse', 
+          onPressed: authService.autenticando ? null : () async {
+
+              FocusScope.of(context).unfocus();
+              final navigator = Navigator.of(context);
+              final registerOk = await authService.register(nameCtrl.text.trim(),emailCtrl.text.trim(), passCtrl.text.trim());
+              if(registerOk == true){
+                //TODO: Conectar a nuestro socket server
+
+                navigator.pushReplacementNamed( 'usuarios');
+              
+              }else{
+
+                mostrarAlerta( context , 'Registro invalido', registerOk == null ? 'Complete todos los campos correctamente' : registerOk);
+              
+              }
+              passCtrl.text = '';
+              
           },)
           
         ],

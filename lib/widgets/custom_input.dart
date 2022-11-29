@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomInput extends StatelessWidget {
 
   final IconData icon;
+  final Widget? seePassword;
   final String placeHolder;
   final TextEditingController textController;
   final TextInputType keyboardType;
@@ -13,7 +14,8 @@ class CustomInput extends StatelessWidget {
     required this.icon, 
     required this.placeHolder, 
     required this.textController, 
-    this.keyboardType = TextInputType.text, 
+    this.seePassword, 
+    this.keyboardType = TextInputType.text,
     this.isPassword = false
   });
 
@@ -40,6 +42,7 @@ class CustomInput extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: isPassword,
         decoration: InputDecoration(
+          suffixIcon: seePassword,
           prefixIcon: Icon(icon),
           focusedBorder: InputBorder.none,
           border: InputBorder.none,

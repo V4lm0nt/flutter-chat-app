@@ -4,8 +4,9 @@ class BotonAzul extends StatelessWidget {
 
   final String texto;
   final void Function()? onPressed;
+  final Color? color;
 
-  const BotonAzul({super.key, required this.texto, this.onPressed});
+  const BotonAzul({super.key, required this.texto, this.onPressed, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +20,9 @@ class BotonAzul extends StatelessWidget {
               alignment: Alignment.center,
               width: double.infinity,
               height: 55,
-              decoration: const ShapeDecoration(
-              color: Colors.blue,
-              shape: StadiumBorder()),
+              decoration:  ShapeDecoration(
+              color: color,
+              shape: const StadiumBorder()),
               child: Text(texto, style: const TextStyle(color: Colors.white, fontSize: 17),),
             )
           );

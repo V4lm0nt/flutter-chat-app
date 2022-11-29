@@ -1,8 +1,11 @@
 // ignore_for_file: avoid_print
 
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -57,9 +60,13 @@ class __FormState extends State<_Form> {
 
   final emailCtrl = TextEditingController();
   final passCtrl  = TextEditingController();
+  bool obscure = true;
 
   @override
   Widget build(BuildContext context) {
+
+  final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -76,15 +83,36 @@ class __FormState extends State<_Form> {
           CustomInput(
             icon: Icons.lock_outlined, 
             placeHolder: 'Password', 
-            //keyboardType: TextInputType.text, 
             textController: passCtrl, 
-            isPassword: true,   
-          ),
+            isPassword: obscure,   
+            seePassword:  GestureDetector(
+              child: obscure ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off), 
+              onTap: () => setState(() { obscure ? obscure = false : obscure = true; })
+              )
+            ),
+          
 
           // TAREA crear botón
-          BotonAzul(texto: 'Ingrese', onPressed: () {
-              print(emailCtrl.text);
-              print(passCtrl.text);
+          BotonAzul(
+            color: authService.autenticando ? Colors.grey : Colors.blue,
+            texto: 'Ingrese',           
+            onPressed: authService.autenticando ? null : () async {
+
+              FocusScope.of(context).unfocus();
+              final navigator = Navigator.of(context);
+              final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
+              if(loginOk){
+                //TODO: Conectar a nuestro socket server
+
+                navigator.pushReplacementNamed( 'usuarios');
+              
+              }else{
+
+                mostrarAlerta( context , 'Email o contraseña incorrecta', 'Revise sus credenciales nuevamente');
+              
+              }
+              passCtrl.text = '';
+              
           },)
           
         ],
