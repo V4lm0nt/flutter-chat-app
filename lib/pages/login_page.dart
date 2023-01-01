@@ -1,11 +1,11 @@
 // ignore_for_file: avoid_print
-
-import 'package:chat/helpers/mostrar_alerta.dart';
-import 'package:chat/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chat/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+
+import 'package:chat/services/services.dart';
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/widgets/widgets.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -66,6 +66,7 @@ class __FormState extends State<_Form> {
   Widget build(BuildContext context) {
 
   final authService = Provider.of<AuthService>(context);
+  final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -102,7 +103,7 @@ class __FormState extends State<_Form> {
               final navigator = Navigator.of(context);
               final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
               if(loginOk){
-                //TODO: Conectar a nuestro socket server
+                socketService.connect();
 
                 navigator.pushReplacementNamed( 'usuarios');
               

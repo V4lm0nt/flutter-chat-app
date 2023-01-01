@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:chat/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers/mostrar_alerta.dart';
-import '../services/auth_service.dart';
+import 'package:chat/services/services.dart';
+
+import 'package:chat/helpers/mostrar_alerta.dart';
+
+import 'package:chat/widgets/widgets.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -67,7 +69,7 @@ class __FormState extends State<_Form> {
   Widget build(BuildContext context) {
 
   final authService = Provider.of<AuthService>(context);
-
+  final socketService = Provider.of<SocketService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -107,13 +109,13 @@ class __FormState extends State<_Form> {
               final navigator = Navigator.of(context);
               final registerOk = await authService.register(nameCtrl.text.trim(),emailCtrl.text.trim(), passCtrl.text.trim());
               if(registerOk == true){
-                //TODO: Conectar a nuestro socket server
-
+                
+                socketService.connect();
                 navigator.pushReplacementNamed( 'usuarios');
               
               }else{
 
-                mostrarAlerta( context , 'Registro invalido', registerOk == null ? 'Complete todos los campos correctamente' : registerOk);
+                mostrarAlerta( context , 'Registro invalido', registerOk ?? 'Complete todos los campos correctamente');
               
               }
               passCtrl.text = '';
